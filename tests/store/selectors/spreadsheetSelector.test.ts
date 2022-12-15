@@ -13,6 +13,7 @@ describe('Spreadsheet selector test', () => {
       spreadsheet: {
         filterQuery: '',
         data: {
+          headers: ['A', 'B', 'C'],
           rows: [],
           version: 1,
         },

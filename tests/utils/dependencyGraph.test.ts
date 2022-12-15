@@ -19,16 +19,6 @@ describe('dependencyGraph test', () => {
     ])
   })
 
-  it('should return parent references as well', () => {
-    getCellReferencesFromExpression('=1 + A2', 0, 'A')
-
-    const result = getCellReferencesFromExpression('=1 + C3', 2, 'A')
-    expect(result).toEqual([
-      { column: 'A', row: 0 },
-      { column: 'C', row: 3 },
-    ])
-  })
-
   it('should return an empty list when a node is no longer referenced', () => {
     getCellReferencesFromExpression('=1 + A2', 0, 'A')
     const result = getCellReferencesFromExpression('=1 + 2', 0, 'A')

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { cloneDeep } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
 
 import { ProgressData, Spreadsheet, SpreadsheetCell } from '../../../@types/common'
@@ -18,9 +19,12 @@ export interface SpreadsheetState {
   progressData: ProgressData
 }
 
+const DEFAULT_HEADERS = ['A', 'B', 'C']
+
 const initialState: SpreadsheetState = {
   filterQuery: '',
   data: {
+    headers: cloneDeep(DEFAULT_HEADERS),
     rows: [],
     version: 1,
   },
@@ -31,6 +35,18 @@ const initialState: SpreadsheetState = {
     done_at: null,
   },
 }
+
+const getEmptyRow = (headers: Array<string>, idx: number) => ({
+  idx,
+  key: uuidv4(),
+  columns: headers.reduce((acc, h) => {
+    acc[h] = {
+      data: '',
+      value: '',
+    }
+    return acc
+  }, {} as Record<string, SpreadsheetCell>),
+})
 
 export const spreadsheetSlice = createSlice({
   name: 'spreadsheet',
@@ -48,31 +64,24 @@ export const spreadsheetSlice = createSlice({
       state.errorMessage = action.payload
     },
     addRow: state => {
-      state.data.rows.push({
-        idx: state.data.rows.length + 1,
-        key: uuidv4(),
-        columns: {
-          A: {
-            data: '',
-            value: '',
-          },
-          B: {
-            data: '',
-            value: '',
-          },
-          C: {
-            data: '',
-            value: '',
-          },
-        },
-      })
+      state.data.rows.push(getEmptyRow(state.data.headers, state.data.rows.length))
     },
   },
   extraReducers: builder => {
     builder
       .addCase(spreadhsheetThunks.getSpreadsheet.fulfilled, (state, action) => {
         state.status = 'synced'
-        state.data = action.payload
+        state.data.version = action.payload.version
+
+        // Let's use default headers in case incoming CSV is empty
+        state.data.headers =
+          action.payload.headers.length > 0 ? action.payload.headers : cloneDeep(DEFAULT_HEADERS)
+
+        // Populate with at least one empty row if incoming CSV is empty
+        state.data.rows =
+          action.payload.rows.length > 0
+            ? action.payload.rows
+            : [getEmptyRow(state.data.headers, 0)]
       })
       .addCase(spreadhsheetThunks.getSpreadsheet.rejected, state => {
         state.status = 'error'

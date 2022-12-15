@@ -16,6 +16,7 @@ export interface SpreadsheetRow {
 }
 
 export interface Spreadsheet {
+  headers: Array<string>
   rows: Array<SpreadsheetRow>
   version: number
 }

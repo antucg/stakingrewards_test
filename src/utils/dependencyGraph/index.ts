@@ -34,10 +34,8 @@ export const getCellReferencesFromExpression = (
   // Update dependencies, existing ones might have to be deleted or new ones added
   updateDependencyGraph(row, column, matchResult)
 
-  // Return all parent and children nodes
-  return graph.hasNode(currentNode)
-    ? getNodesData([...graph.dependantsOf(currentNode), ...graph.dependenciesOf(currentNode)])
-    : []
+  // Return all children nodes (dependencies)
+  return graph.hasNode(currentNode) ? getNodesData(graph.dependenciesOf(currentNode)) : []
 }
 
 const updateDependencyGraph = (

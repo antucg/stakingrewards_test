@@ -13,6 +13,7 @@ describe('useExpressionParser test', () => {
       spreadsheet: {
         filterQuery: '',
         data: {
+          headers: ['A', 'B', 'C'],
           rows: [],
           version: 1,
         },
