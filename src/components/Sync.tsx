@@ -18,6 +18,16 @@ import {
   updateErrorMessage,
 } from '../redux/spreadsheet/spreadsheetSlice'
 
+const SyncBackground = styled('div')({
+  backgroundColor: '#ccc',
+  width: '50px',
+  height: '50px',
+  borderRadius: '25px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})
+
 const rotatingAnimation = keyframes`
   from {
     transform: rotate(0deg);
@@ -94,15 +104,18 @@ const SyncIndicator = () => {
     }
   }, [asyncStatus])
 
+  let output
   if (errorMessage !== null) {
-    return <ShakingErrorIcon />
+    output = <ShakingErrorIcon />
   } else if (showDone === true) {
-    return <DoneAnimatedIcon />
+    output = <DoneAnimatedIcon />
   } else if (asyncStatus === 'pending' || asyncStatus === 'initialising') {
-    return <RotatingSyncIcon />
+    output = <RotatingSyncIcon />
   } else {
-    return null
+    output = null
   }
+
+  return output !== null ? <SyncBackground>{output}</SyncBackground> : null
 }
 
 export default SyncIndicator

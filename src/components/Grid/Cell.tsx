@@ -16,6 +16,7 @@ interface CellProps {
 
 const Cell = ({ data, row, column }: CellProps) => {
   const dispatch = useAppDispatch()
+  const [previousCellData, setPreviousCellData] = useState<string>('null')
   const [cellData, setCellData] = useState(data.data)
   const [isFocused, setIsFocused] = useState(false)
   const cellValue = useExpressionParser(cellData, row, column)
@@ -24,12 +25,19 @@ const Cell = ({ data, row, column }: CellProps) => {
     dispatch(updateCell({ row, column, data: cellData }))
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCellData(e.target.value || '')
+    setCellData(e.target.value)
+  }
+
+  const onFocus = () => {
+    setIsFocused(true)
+    setPreviousCellData(cellData)
   }
 
   const onBlur = () => {
     setIsFocused(false)
-    updateStore({ data: cellData, value: cellValue })
+    if (previousCellData !== cellData) {
+      updateStore({ data: cellData, value: cellValue })
+    }
   }
 
   return (
@@ -49,7 +57,7 @@ const Cell = ({ data, row, column }: CellProps) => {
         </InputAdornment>
       }
       onChange={onChange}
-      onFocus={() => setIsFocused(true)}
+      onFocus={onFocus}
       onBlur={onBlur}
     />
   )

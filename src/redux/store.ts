@@ -10,6 +10,7 @@ export function setupStore(preloadedState?: PreloadedState<RootState>) {
   return configureStore({
     reducer: rootReducer,
     preloadedState,
+    middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
   })
 }
 export type RootState = ReturnType<typeof rootReducer>

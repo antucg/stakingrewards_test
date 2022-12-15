@@ -4,35 +4,41 @@ import { Grid } from 'react-spreadsheet-grid'
 const cellsColor = '#000'
 const rowsBorderRadius = '5px'
 const StyledGridWrapper = styled('div')(({ theme }) => ({
+  'marginBottom': theme.spacing(4),
+
   '& .SpreadsheetGrid__header': {
     'fontWeight': 500,
     'borderRadius': rowsBorderRadius,
-    'marginBottom': theme.spacing(1),
-    'backgroundColor': '#efefef',
+    'paddingBottom': theme.spacing(1),
 
     '& .SpreadsheetGrid__headCell': {
       color: cellsColor,
       justifyContent: 'center',
-      backgroundColor: 'transparent',
+      backgroundColor: '#efefef',
       border: '0 none',
     },
   },
-  '& .SpreadsheetGrid': {
-    'backgroundColor': 'transparent',
+  '& .SpreadsheetGridScrollWrapper': {
+    'border': '0 none',
+    'height': 'calc(100vh - 212px) !important',
 
-    '& .SpreadsheetGrid__row': {
-      'backgroundColor': '#fafafa',
-      'border': '0 none',
-      'borderRadius': rowsBorderRadius,
-      'marginBottom': theme.spacing(0.5),
+    '& .SpreadsheetGrid': {
+      'backgroundColor': 'transparent',
 
-      '& .SpreadsheetGrid__cell': {
-        'borderColor': 'rgba(150, 150, 150, .3)',
-        '&:first-of-type': {
-          borderLeft: '0 none',
-        },
-        '&:last-child': {
-          borderRight: '0 none',
+      '& .SpreadsheetGrid__row': {
+        'border': '0 none',
+        'borderRadius': rowsBorderRadius,
+        'paddingBottom': theme.spacing(0.5),
+
+        '& .SpreadsheetGrid__cell': {
+          'backgroundColor': '#fafafa',
+          'borderColor': 'rgba(150, 150, 150, .3)',
+          '&:first-of-type': {
+            borderLeft: '0 none',
+          },
+          '&:last-child': {
+            borderRight: '0 none',
+          },
         },
       },
     },

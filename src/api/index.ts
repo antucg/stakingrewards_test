@@ -5,7 +5,7 @@ import httpClient from './httpClient'
 /**
  * Read mock data from json, and returns it as a JSON object.
  */
-export const getCSVData = (headers: Array<string>) => csvToJson(csvData.csvBackup, headers)
+export const getCSVData = (headers: Array<string>) => csvToJson(csvData.csv, headers)
 
 /**
  * Given a CSV file as a string, calls the server to save its changes.

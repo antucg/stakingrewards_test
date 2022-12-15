@@ -118,7 +118,7 @@ describe('useExpressionParser test', () => {
     expect(result.current).toBe(ERROR_VALUE)
   })
 
-  it.only('should process expression with leading zeros in referenced cell', () => {
+  it('should process expression with leading zeros in referenced cell', () => {
     state.spreadsheet.data.rows = [
       {
         idx: 0,
