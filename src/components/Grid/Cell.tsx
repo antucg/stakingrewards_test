@@ -1,6 +1,6 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import { Input, InputAdornment } from '@mui/material'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 
 import { SpreadsheetCell } from '../../../@types/common'
 import useExpressionParser from '../../hooks/useExpressionParser'
@@ -21,24 +21,26 @@ const Cell = ({ data, row, column }: CellProps) => {
   const [isFocused, setIsFocused] = useState(false)
   const cellValue = useExpressionParser(cellData, row, column)
 
-  const updateStore = (cellData: SpreadsheetCell) =>
-    dispatch(updateCell({ row, column, data: cellData }))
+  const updateStore = useCallback(
+    (cellData: SpreadsheetCell) => dispatch(updateCell({ row, column, data: cellData })),
+    [row, column, dispatch],
+  )
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setCellData(e.target.value)
-  }
+  }, [])
 
-  const onFocus = () => {
+  const onFocus = useCallback(() => {
     setIsFocused(true)
     setPreviousCellData(cellData)
-  }
+  }, [cellData])
 
-  const onBlur = () => {
+  const onBlur = useCallback(() => {
     setIsFocused(false)
     if (previousCellData !== cellData) {
       updateStore({ data: cellData, value: cellValue })
     }
-  }
+  }, [cellValue, cellData, previousCellData, updateStore])
 
   return (
     <Input

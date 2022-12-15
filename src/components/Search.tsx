@@ -2,7 +2,7 @@ import ClearIcon from '@mui/icons-material/HighlightOff'
 import SearchIcon from '@mui/icons-material/Search'
 import { Box, FilledInput, InputAdornment, styled } from '@mui/material'
 import { debounce } from 'lodash'
-import { ChangeEvent, useEffect, useState, useMemo } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState, useMemo } from 'react'
 
 import { useAppDispatch } from '../redux/hooks/hooks'
 import { updateQuery } from '../redux/spreadsheet/spreadsheetSlice'
@@ -19,7 +19,8 @@ const SpreadsheetSearch = () => {
   const dispatch = useAppDispatch()
   const [query, setQuery] = useState('')
 
-  const updateStore = (query: string) => dispatch(updateQuery(query))
+  const updateStore = useCallback((query: string) => dispatch(updateQuery(query)), [dispatch])
+
   /**
    * Debounce store update so we don't perform too many requests while the user is still typing
    */
@@ -29,15 +30,18 @@ const SpreadsheetSearch = () => {
   // Clean up debounce call in case the component gets unmounted before execution
   useEffect(() => () => debouncedUpdateStore.cancel(), [debouncedUpdateStore])
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-    debouncedUpdateStore(e.target.value)
-  }
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.target.value)
+      debouncedUpdateStore(e.target.value)
+    },
+    [debouncedUpdateStore],
+  )
 
-  const onClear = () => {
+  const onClear = useCallback(() => {
     setQuery('')
     debouncedUpdateStore('')
-  }
+  }, [debouncedUpdateStore])
 
   return (
     <Box>
