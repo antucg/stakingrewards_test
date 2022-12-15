@@ -1,4 +1,4 @@
-import { styled } from '@mui/material'
+import { styled, colors } from '@mui/material'
 import { Grid } from 'react-spreadsheet-grid'
 
 const cellsColor = '#000'
@@ -36,6 +36,18 @@ const StyledGridWrapper = styled('div')(({ theme }) => ({
           },
           '&:last-child': {
             borderRight: '0 none',
+          },
+
+          '&.SpreadsheetGrid__cell_active': {
+            boxShadow: 'none',
+            border: `1px solid ${colors.blue[700]}`,
+            borderRadius: rowsBorderRadius,
+          },
+
+          '&.error': {
+            backgroundColor: '#ffefef',
+            border: '1px solid #AF3434',
+            borderRadius: rowsBorderRadius,
           },
         },
       },

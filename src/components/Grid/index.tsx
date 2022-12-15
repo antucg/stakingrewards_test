@@ -1,11 +1,13 @@
 import { Box, Skeleton, styled } from '@mui/material'
 
+import { SpreadsheetRow } from '../../../@types/common'
 import { useAppSelector } from '../../redux/hooks/hooks'
 import {
   getFilteredSpreadsheet,
   getSpreadsheetHeaders,
   getStatus,
 } from '../../redux/spreadsheet/spreadsheetSelector'
+import { ERROR_VALUE } from '../../utils/expressions/utils'
 import Cell from './Cell'
 import StyledGrid from './StyledGrid'
 
@@ -27,9 +29,11 @@ const SkeletonTable = () => (
 const initColumns = (headers: Array<string>) =>
   headers.map(h => ({
     title: () => h,
-    value: (row: any, { focus }: { focus: boolean }) => (
-      <Cell focus={focus} column={h} row={row.idx} data={row.columns[h]} />
+    value: (row: SpreadsheetRow, { focus }: { focus: boolean }) => (
+      <Cell focus={focus} column={h} row={row.idx} data={row.columns[h]!} />
     ),
+    getCellClassName: (row: SpreadsheetRow) =>
+      row.columns[h]?.value === ERROR_VALUE ? 'error' : '',
   }))
 
 const SpreadsheetGrid = () => {

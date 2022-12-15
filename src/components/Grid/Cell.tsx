@@ -1,6 +1,6 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import { Input, InputAdornment } from '@mui/material'
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from 'react'
 
 import { SpreadsheetCell } from '../../../@types/common'
 import useExpressionParser from '../../hooks/useExpressionParser'
@@ -15,6 +15,7 @@ interface CellProps {
 }
 
 const Cell = ({ data, row, column }: CellProps) => {
+  const inputRef = useRef<HTMLInputElement>()
   const dispatch = useAppDispatch()
   const [previousCellData, setPreviousCellData] = useState<string>('null')
   const [cellData, setCellData] = useState(data.data)
@@ -42,8 +43,19 @@ const Cell = ({ data, row, column }: CellProps) => {
     }
   }, [cellValue, cellData, previousCellData, updateStore])
 
+  /**
+   * Force input blur when pressing the Enter key
+   */
+  const onKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      inputRef.current?.blur()
+    }
+  }, [])
+
   return (
     <Input
+      inputRef={inputRef}
+      type="text"
       value={isFocused === true ? cellData : cellValue}
       fullWidth
       disableUnderline
@@ -58,6 +70,7 @@ const Cell = ({ data, row, column }: CellProps) => {
           <EditOutlinedIcon sx={{ fontSize: 12 }} />
         </InputAdornment>
       }
+      onKeyDown={onKeyDown}
       onChange={onChange}
       onFocus={onFocus}
       onBlur={onBlur}
