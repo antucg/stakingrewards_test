@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "typeRoots": ["../@types", "./@types", "../node_modules/@types"],
+    "jsx": "react"
+  },
+  "include": ["./**/*"]
+}
