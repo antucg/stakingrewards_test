@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { v4 as uuidv4 } from 'uuid'
 
 import { ProgressData, Spreadsheet, SpreadsheetCell } from '../../../@types/common'
 import * as spreadhsheetThunks from './spreadsheetThunks'
@@ -46,6 +47,26 @@ export const spreadsheetSlice = createSlice({
     updateErrorMessage: (state, action: PayloadAction<string | null>) => {
       state.errorMessage = action.payload
     },
+    addRow: state => {
+      state.data.rows.push({
+        idx: state.data.rows.length + 1,
+        key: uuidv4(),
+        columns: {
+          A: {
+            data: '',
+            value: '',
+          },
+          B: {
+            data: '',
+            value: '',
+          },
+          C: {
+            data: '',
+            value: '',
+          },
+        },
+      })
+    },
   },
   extraReducers: builder => {
     builder
@@ -82,6 +103,6 @@ export const spreadsheetSlice = createSlice({
   },
 })
 
-export const { updateCell, updateErrorMessage, updateQuery } = spreadsheetSlice.actions
+export const { addRow, updateCell, updateErrorMessage, updateQuery } = spreadsheetSlice.actions
 export * from './spreadsheetThunks'
 export default spreadsheetSlice.reducer

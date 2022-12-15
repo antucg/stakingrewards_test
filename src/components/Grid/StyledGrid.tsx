@@ -4,8 +4,6 @@ import { Grid } from 'react-spreadsheet-grid'
 const cellsColor = '#000'
 const rowsBorderRadius = '5px'
 const StyledGridWrapper = styled('div')(({ theme }) => ({
-  'marginBottom': theme.spacing(4),
-
   '& .SpreadsheetGrid__header': {
     'fontWeight': 500,
     'borderRadius': rowsBorderRadius,

@@ -1,6 +1,7 @@
 import { Container, styled } from '@mui/material'
 import { useEffect } from 'react'
 
+import ApplicationBar from './components/ApplicationBar'
 import Grid from './components/Grid'
 import Search from './components/Search'
 import SyncIndicator from './components/Sync'
@@ -25,14 +26,17 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <Container>
-      <Title>UI Spreadsheet</Title>
-      <Search />
-      <Grid />
-      <SyncIndicatorWrapper>
-        <SyncIndicator />
-      </SyncIndicatorWrapper>
-    </Container>
+    <>
+      <ApplicationBar />
+      <Container>
+        <Title>UI Spreadsheet</Title>
+        <Search />
+        <Grid />
+        <SyncIndicatorWrapper>
+          <SyncIndicator />
+        </SyncIndicatorWrapper>
+      </Container>
+    </>
   )
 }
 
