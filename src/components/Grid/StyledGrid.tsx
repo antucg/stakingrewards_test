@@ -18,7 +18,7 @@ const StyledGridWrapper = styled('div')(({ theme }) => ({
   },
   '& .SpreadsheetGridScrollWrapper': {
     'border': '0 none',
-    'height': 'calc(100vh - 212px) !important',
+    'height': 'calc(100vh - 244px) !important',
 
     '& .SpreadsheetGrid': {
       'backgroundColor': 'transparent',

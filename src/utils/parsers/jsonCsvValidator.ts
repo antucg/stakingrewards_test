@@ -7,7 +7,7 @@ import { JsonCsv } from '../../../@types/common'
  * provided header array
  */
 export default (data: unknown, columns: Array<string>): data is JsonCsv => {
-  const cell = Joi.alternatives().try(Joi.number(), Joi.string()).required()
+  const cell = Joi.string().required()
   const keys = columns.reduce((acc, current) => {
     acc[current] = cell
     return acc

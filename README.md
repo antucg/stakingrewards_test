@@ -76,13 +76,25 @@ This custom hook has been implemented to manage the logic of the calculations of
 4. Pass the expression and the variables to the [mathematical processor](https://mathjs.org/).
 5. Return the result.
 
-## 6. Run the app
+## 6. Error handling
+
+=== Explain Sync component ===
+
+## 7. Stress testing
+
+The maximum amount of records I tried loading was 1,000,000. Initially the app took a bit to load since the "fake" CSV had to be parsed. Once loaded, the responsiveness of the app wasn't affected. Even when rows are not rendered (thanks to the grid component) on the screen, their data is accessible accessible through redux store.
+
+## 8. Dummy data
+
+A simple mechanism to pre-poluate the grid has been implemented. A stringified CSV file can be found under [fakeCSVData.json](./src/api//fakeCSVData.json). A "mocked" API ([getCSVData](./src/api/index.ts)) has been implemented. Data validation is performed to ensure the format of the data is correct. This is just to illustrate how data validation would be done in the frontend. I used Joi, although there are other alternatives that might be better than this (eg: [io-ts](https://gcanti.github.io/io-ts/)).
+
+## 9. How to run the app
 
 ```
 npm start
 ```
 
-## 7. Run the tests
+## 10. How to run the tests
 
 ```
 npm t
