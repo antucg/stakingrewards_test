@@ -12,7 +12,6 @@ import StyledGrid from './StyledGrid'
 
 const GridWrapper = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(3),
-  height: '500px',
 }))
 
 const SkeletonTable = () => (
@@ -42,15 +41,18 @@ const SpreadsheetGrid = () => {
     <GridWrapper>
       {asyncStatus === 'initialising' && <SkeletonTable />}
       {spreadsheet.rows.length > 0 && (
-        <StyledGrid
-          isScrollable
-          rows={spreadsheet.rows}
-          columns={initColumns(headers)}
-          getRowKey={(row: any) => row.key}
-          headerHeight={40}
-          rowHeight={36}
-          isColumnResizable
-        />
+        <div style={{ overflowX: 'auto', width: '100%' }}>
+          <div style={{ minWidth: `${headers.length * 150}px` }}>
+            <StyledGrid
+              isScrollable
+              rows={spreadsheet.rows}
+              columns={initColumns(headers)}
+              getRowKey={(row: any) => row.key}
+              headerHeight={40}
+              rowHeight={36}
+            />
+          </div>
+        </div>
       )}
     </GridWrapper>
   )

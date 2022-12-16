@@ -3,28 +3,23 @@ import { Grid } from 'react-spreadsheet-grid'
 
 const cellsColor = '#000'
 export const rowsBorderRadius = '5px'
-const cellMinWidth = '150px'
 const StyledGridWrapper = styled('div')(({ theme }) => ({
-  '& .SpreadsheetGridContainer': {
-    overflowX: 'auto',
-  },
   '& .SpreadsheetGrid__header': {
     'fontWeight': 500,
     'borderRadius': rowsBorderRadius,
-    'paddingBottom': theme.spacing(1),
-    'overflowY': 'unset',
+    'marginBottom': theme.spacing(1),
+    'overflow': 'hidden',
 
     '& .SpreadsheetGrid__headCell': {
       color: cellsColor,
       justifyContent: 'center',
       backgroundColor: '#efefef',
       border: '0 none',
-      minWidth: cellMinWidth,
     },
   },
   '& .SpreadsheetGridScrollWrapper': {
     'border': '0 none',
-    'height': 'calc(100vh - 244px) !important',
+    'height': 'calc(100vh - 260px) !important',
 
     '& .SpreadsheetGrid': {
       'backgroundColor': 'transparent',
@@ -32,13 +27,12 @@ const StyledGridWrapper = styled('div')(({ theme }) => ({
       '& .SpreadsheetGrid__row': {
         'border': '0 none',
         'borderRadius': rowsBorderRadius,
-        'paddingBottom': theme.spacing(0.5),
+        'marginBottom': theme.spacing(0.5),
 
         '& .SpreadsheetGrid__cell': {
           'padding': 0,
           'backgroundColor': '#fafafa',
           'borderColor': 'rgba(150, 150, 150, .3)',
-          'minWidth': cellMinWidth,
 
           '&:first-of-type': {
             borderLeft: '0 none',
