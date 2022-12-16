@@ -24,13 +24,23 @@ const SkeletonTable = () => (
   </>
 )
 
-const initColumns = (headers: Array<string>) =>
-  headers.map(h => ({
+const initColumns = (headers: Array<string>) => [
+  {
+    title: () => '',
+    value: (row: SpreadsheetRow) => <p style={{ textAlign: 'center', width: '100%' }}>{row.idx}</p>,
+    id: 'idx',
+    width: 5,
+  },
+  ...headers.map(h => ({
     title: () => h,
     value: (row: SpreadsheetRow, { focus }: { focus: boolean }) => (
       <Cell focus={focus} column={h} row={row.idx} data={row.columns[h]!} />
     ),
-  }))
+    id: 'h',
+  })),
+]
+
+const disableCell = (row: SpreadsheetRow, columnId: string) => columnId === 'idx'
 
 const SpreadsheetGrid = () => {
   const asyncStatus = useAppSelector(getStatus)
@@ -50,6 +60,7 @@ const SpreadsheetGrid = () => {
               getRowKey={(row: any) => row.key}
               headerHeight={40}
               rowHeight={36}
+              disabledCellChecker={disableCell}
             />
           </div>
         </div>
