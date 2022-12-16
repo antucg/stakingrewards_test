@@ -19,6 +19,7 @@
     "json2csv": "^5.0.7",
     "lodash": "^4.17.21",
     "mathjs": "^11.5.0",
+    "number-to-excel-header": "^1.0.1",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

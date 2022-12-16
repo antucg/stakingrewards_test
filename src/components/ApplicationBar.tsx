@@ -1,9 +1,14 @@
-import AddIcon from '@mui/icons-material/Add'
-import { AppBar, Box, Toolbar, Tooltip, IconButton } from '@mui/material'
+import PlusOneIcon from '@mui/icons-material/PlusOne'
+import { AppBar, Box, Button, Toolbar, styled } from '@mui/material'
 import { useCallback } from 'react'
 
 import { useAppDispatch } from '../redux/hooks/hooks'
-import { addRow } from '../redux/spreadsheet/spreadsheetSlice'
+import { addColumn, addRow } from '../redux/spreadsheet/spreadsheetSlice'
+
+const ActionButton = styled(Button)(({ theme }) => ({
+  color: '#fff',
+  marginRight: theme.spacing(1),
+}))
 
 const ApplicationBar = () => {
   const dispatch = useAppDispatch()
@@ -12,22 +17,30 @@ const ApplicationBar = () => {
     dispatch(addRow())
   }, [dispatch])
 
+  const onAddColumnClick = useCallback(() => {
+    dispatch(addColumn())
+  }, [dispatch])
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Tooltip title="Add new row">
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={onAddRowClick}
-            >
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
+          <ActionButton
+            startIcon={<PlusOneIcon />}
+            onClick={onAddRowClick}
+            variant="contained"
+            color="info"
+          >
+            Row
+          </ActionButton>
+          <ActionButton
+            startIcon={<PlusOneIcon />}
+            onClick={onAddColumnClick}
+            variant="contained"
+            color="info"
+          >
+            Column
+          </ActionButton>
         </Toolbar>
       </AppBar>
     </Box>

@@ -20,7 +20,7 @@ export const getCellValues = (cells: Array<CellCoordinate>, spreadsheet: Spreads
     const variableName = `${current.column}${current.row}`
     acc[variableName] =
       // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      spreadsheet.rows[current.row]?.columns[current.column]?.value || ERROR_VALUE
+      spreadsheet.rows[current.row]?.columns[current.column]?.value || ''
     return acc
   }, {} as Record<string, CellData>)
 
@@ -43,6 +43,7 @@ const useExpressionParser = (maybeExpression: CellData, row: number, column: str
 
       // Process expression interpolating variable values
       const result = processExpression(curatedExpression, cellValues)
+
       setValue(typeof result === 'number' ? result.toString() : result)
     } else {
       setValue(maybeExpression)

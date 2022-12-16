@@ -1,11 +1,25 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
-import { Input, InputAdornment } from '@mui/material'
+import { Input, InputAdornment, styled } from '@mui/material'
 import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from 'react'
 
 import { SpreadsheetCell } from '../../../@types/common'
 import useExpressionParser from '../../hooks/useExpressionParser'
 import { useAppDispatch } from '../../redux/hooks/hooks'
 import { updateCell } from '../../redux/spreadsheet/spreadsheetSlice'
+import { ERROR_VALUE } from '../../utils/expressions/utils'
+import { rowsBorderRadius } from './StyledGrid'
+
+const InputWrapper = styled('div')({
+  'padding': '8px 10px',
+  'width': '100%',
+  'height': '100%',
+
+  '&.error': {
+    backgroundColor: '#ffefef',
+    border: '1px solid #AF3434',
+    borderRadius: rowsBorderRadius,
+  },
+})
 
 interface CellProps {
   data: SpreadsheetCell
@@ -53,28 +67,30 @@ const Cell = ({ data, row, column }: CellProps) => {
   }, [])
 
   return (
-    <Input
-      inputRef={inputRef}
-      type="text"
-      value={isFocused === true ? cellData : cellValue}
-      fullWidth
-      disableUnderline
-      inputProps={{
-        style: {
-          textAlign: 'center',
-          fontSize: '11px',
-        },
-      }}
-      endAdornment={
-        <InputAdornment position="end">
-          <EditOutlinedIcon sx={{ fontSize: 12 }} />
-        </InputAdornment>
-      }
-      onKeyDown={onKeyDown}
-      onChange={onChange}
-      onFocus={onFocus}
-      onBlur={onBlur}
-    />
+    <InputWrapper className={`${cellValue === ERROR_VALUE ? 'error' : ''}`}>
+      <Input
+        inputRef={inputRef}
+        type="text"
+        value={isFocused === true ? cellData : cellValue}
+        fullWidth
+        disableUnderline
+        inputProps={{
+          style: {
+            textAlign: 'center',
+            fontSize: '11px',
+          },
+        }}
+        endAdornment={
+          <InputAdornment position="end">
+            <EditOutlinedIcon sx={{ fontSize: 12 }} />
+          </InputAdornment>
+        }
+        onKeyDown={onKeyDown}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      />
+    </InputWrapper>
   )
 }
 

@@ -7,7 +7,6 @@ import {
   getSpreadsheetHeaders,
   getStatus,
 } from '../../redux/spreadsheet/spreadsheetSelector'
-import { ERROR_VALUE } from '../../utils/expressions/utils'
 import Cell from './Cell'
 import StyledGrid from './StyledGrid'
 
@@ -32,8 +31,6 @@ const initColumns = (headers: Array<string>) =>
     value: (row: SpreadsheetRow, { focus }: { focus: boolean }) => (
       <Cell focus={focus} column={h} row={row.idx} data={row.columns[h]!} />
     ),
-    getCellClassName: (row: SpreadsheetRow) =>
-      row.columns[h]?.value === ERROR_VALUE ? 'error' : '',
   }))
 
 const SpreadsheetGrid = () => {

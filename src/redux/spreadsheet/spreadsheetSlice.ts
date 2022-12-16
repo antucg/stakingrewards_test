@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { cloneDeep } from 'lodash'
+import numberToExcelHeader from 'number-to-excel-header'
 import { v4 as uuidv4 } from 'uuid'
 
 import { ProgressData, Spreadsheet, SpreadsheetCell } from '../../../@types/common'
@@ -65,6 +66,13 @@ export const spreadsheetSlice = createSlice({
     },
     addRow: state => {
       state.data.rows.push(getEmptyRow(state.data.headers, state.data.rows.length))
+      state.status = 'changed'
+    },
+    addColumn: state => {
+      const newHeader = numberToExcelHeader(state.data.headers.length + 1)
+      state.data.headers.push(newHeader)
+      state.data.rows.forEach(r => (r.columns[newHeader] = { data: '', value: '' }))
+      state.status = 'changed'
     },
   },
   extraReducers: builder => {
@@ -112,6 +120,7 @@ export const spreadsheetSlice = createSlice({
   },
 })
 
-export const { addRow, updateCell, updateErrorMessage, updateQuery } = spreadsheetSlice.actions
+export const { addColumn, addRow, updateCell, updateErrorMessage, updateQuery } =
+  spreadsheetSlice.actions
 export * from './spreadsheetThunks'
 export default spreadsheetSlice.reducer
