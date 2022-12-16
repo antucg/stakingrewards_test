@@ -178,7 +178,7 @@
     "keyword-spacing": ["error", {"before": true, "after": true}],
     "linebreak-style": ["error", "unix"],
     "max-classes-per-file": ["error", 1],
-    "max-lines-per-function": ["error", {"max": 50}],
+    // "max-lines-per-function": ["error", {"max": 50}],
     "max-lines": ["error", {"max": 250}],
     "max-len": ["error", {"code": 100, "ignoreUrls": true, "ignoreStrings": true, "ignoreTemplateLiterals": false}],
     "new-parens": ["error"],

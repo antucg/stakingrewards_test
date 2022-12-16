@@ -1,14 +1,29 @@
 import { DepGraph } from 'dependency-graph'
 
+import { ERROR_CIRCULAR } from '../expressions/utils'
+
 export interface CellCoordinate {
   column: string
   row: number
 }
 
-let graph = new DepGraph<CellCoordinate>()
+let graph = new DepGraph<CellCoordinate>({ circular: true })
+
+const hasDependencyCycle = (depGraph: DepGraph<CellCoordinate>) => {
+  const previousCircular = depGraph.circular
+  let hasCycle = false
+  try {
+    depGraph.circular = false
+    depGraph.overallOrder()
+  } catch (e) {
+    hasCycle = true
+  }
+  graph.circular = previousCircular
+  return hasCycle
+}
 
 export const resetGraph = () => {
-  graph = new DepGraph<CellCoordinate>()
+  graph = new DepGraph<CellCoordinate>({ circular: true })
 }
 
 /**
@@ -18,7 +33,7 @@ export const getCellReferencesFromExpression = (
   expression: string,
   row: number,
   column: string,
-) => {
+): Array<CellCoordinate> | typeof ERROR_CIRCULAR => {
   if (expression === '') {
     return []
   }
@@ -33,6 +48,10 @@ export const getCellReferencesFromExpression = (
 
   // Update dependencies, existing ones might have to be deleted or new ones added
   updateDependencyGraph(row, column, matchResult)
+
+  if (hasDependencyCycle(graph)) {
+    return ERROR_CIRCULAR
+  }
 
   // Return all children nodes (dependencies)
   return graph.hasNode(currentNode) ? getNodesData(graph.dependenciesOf(currentNode)) : []

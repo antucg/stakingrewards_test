@@ -1,12 +1,12 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import { Input, InputAdornment, styled } from '@mui/material'
-import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 import { SpreadsheetCell } from '../../../@types/common'
 import useExpressionParser from '../../hooks/useExpressionParser'
 import { useAppDispatch } from '../../redux/hooks/hooks'
 import { updateCell } from '../../redux/spreadsheet/spreadsheetSlice'
-import { ERROR_VALUE } from '../../utils/expressions/utils'
+import { isError } from '../../utils/expressions/utils'
 import { rowsBorderRadius } from './StyledGrid'
 
 const InputWrapper = styled('div')({
@@ -16,7 +16,7 @@ const InputWrapper = styled('div')({
 
   '&.error': {
     backgroundColor: '#ffefef',
-    border: '1px solid #AF3434',
+    borderColor: '#AF3434 !important',
     borderRadius: rowsBorderRadius,
   },
 })
@@ -41,6 +41,12 @@ const Cell = ({ data, row, column }: CellProps) => {
     [row, column, dispatch],
   )
 
+  useEffect(() => {
+    if (previousCellData !== cellData && !isFocused) {
+      updateStore({ data: cellData, value: cellValue })
+    }
+  }, [cellValue, cellData, previousCellData, updateStore, isFocused])
+
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setCellData(e.target.value)
   }, [])
@@ -52,22 +58,19 @@ const Cell = ({ data, row, column }: CellProps) => {
 
   const onBlur = useCallback(() => {
     setIsFocused(false)
-    if (previousCellData !== cellData) {
-      updateStore({ data: cellData, value: cellValue })
-    }
-  }, [cellValue, cellData, previousCellData, updateStore])
+  }, [])
 
   /**
    * Force input blur when pressing the Enter key
    */
   const onKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.key === 'Tab') {
       inputRef.current?.blur()
     }
   }, [])
 
   return (
-    <InputWrapper className={`${cellValue === ERROR_VALUE ? 'error' : ''}`}>
+    <InputWrapper className={`${isError(cellValue) ? 'error' : ''}`}>
       <Input
         inputRef={inputRef}
         type="text"

@@ -5,7 +5,7 @@ import { CellData, Spreadsheet } from '../../@types/common'
 import { useAppSelector } from '../redux/hooks/hooks'
 import { getSpreadsheet } from '../redux/spreadsheet/spreadsheetSelector'
 import { CellCoordinate, getCellReferencesFromExpression } from '../utils/dependencyGraph'
-import { curateExpression, ERROR_VALUE } from '../utils/expressions/utils'
+import { curateExpression, ERROR_VALUE, ERROR_CIRCULAR } from '../utils/expressions/utils'
 
 const processExpression = (expression: string, variables: Record<string, CellData> = {}) => {
   try {
@@ -37,6 +37,12 @@ const useExpressionParser = (maybeExpression: CellData, row: number, column: str
 
       // Get the list of referenced cells from the expression
       const referencedCells = getCellReferencesFromExpression(curatedExpression, row, column)
+
+      // If there is a dependency cycle let's display the error
+      if (referencedCells === ERROR_CIRCULAR) {
+        setValue(ERROR_CIRCULAR)
+        return
+      }
 
       // Get the values of the referenced cells
       const cellValues = getCellValues(referencedCells, spreadsheet)
