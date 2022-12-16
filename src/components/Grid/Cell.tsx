@@ -31,7 +31,6 @@ interface CellProps {
 const Cell = ({ data, row, column }: CellProps) => {
   const inputRef = useRef<HTMLInputElement>()
   const dispatch = useAppDispatch()
-  const [previousCellData, setPreviousCellData] = useState<string>('null')
   const [cellData, setCellData] = useState(data.data)
   const [isFocused, setIsFocused] = useState(false)
   const cellValue = useExpressionParser(cellData, row, column)
@@ -42,10 +41,10 @@ const Cell = ({ data, row, column }: CellProps) => {
   )
 
   useEffect(() => {
-    if (previousCellData !== cellData && !isFocused) {
+    if (!isFocused) {
       updateStore({ data: cellData, value: cellValue })
     }
-  }, [cellValue, cellData, previousCellData, updateStore, isFocused])
+  }, [cellValue, cellData, updateStore, isFocused])
 
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setCellData(e.target.value)
@@ -53,8 +52,7 @@ const Cell = ({ data, row, column }: CellProps) => {
 
   const onFocus = useCallback(() => {
     setIsFocused(true)
-    setPreviousCellData(cellData)
-  }, [cellData])
+  }, [])
 
   const onBlur = useCallback(() => {
     setIsFocused(false)

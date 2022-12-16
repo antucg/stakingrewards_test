@@ -60,7 +60,7 @@ export const getCellReferencesFromExpression = (
   }
 
   // Return all children nodes (dependencies)
-  return graph.hasNode(currentNode) ? getNodesData(graph.dependenciesOf(currentNode)) : []
+  return graph.hasNode(currentNode) ? getNodesData(graph.directDependenciesOf(currentNode)) : []
 }
 
 const updateDependencyGraph = (
