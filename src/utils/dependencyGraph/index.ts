@@ -1,4 +1,4 @@
-import { DepGraph } from 'dependency-graph'
+import { DepGraph, DepGraphCycleError } from 'dependency-graph'
 
 import { ERROR_CIRCULAR } from '../expressions/utils'
 
@@ -9,19 +9,25 @@ export interface CellCoordinate {
 
 let graph = new DepGraph<CellCoordinate>({ circular: true })
 
-const hasDependencyCycle = (depGraph: DepGraph<CellCoordinate>) => {
+const hasDependencyCycle = (depGraph: DepGraph<CellCoordinate>, node: string) => {
   const previousCircular = depGraph.circular
   let hasCycle = false
   try {
+    // Small "hack" to check if there is a dependecy cycle when circular is set to true
     depGraph.circular = false
     depGraph.overallOrder()
   } catch (e) {
-    hasCycle = true
+    if (e instanceof DepGraphCycleError) {
+      hasCycle = e.cyclePath.includes(node)
+    }
   }
   graph.circular = previousCircular
   return hasCycle
 }
 
+/**
+ * Small helper fn to be used during the tests
+ */
 export const resetGraph = () => {
   graph = new DepGraph<CellCoordinate>({ circular: true })
 }
@@ -49,7 +55,7 @@ export const getCellReferencesFromExpression = (
   // Update dependencies, existing ones might have to be deleted or new ones added
   updateDependencyGraph(row, column, matchResult)
 
-  if (hasDependencyCycle(graph)) {
+  if (hasDependencyCycle(graph, currentNode)) {
     return ERROR_CIRCULAR
   }
 
