@@ -107,6 +107,7 @@ A simple mechanism to pre-poluate the grid has been implemented. A stringified C
 ## 9. How to run the app
 
 ```
+npm install
 npm start
 ```
 
