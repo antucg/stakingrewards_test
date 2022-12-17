@@ -106,10 +106,17 @@ A simple mechanism to pre-poluate the grid has been implemented. A stringified C
 
 ## 9. How to run the app
 
-```
-npm install
-npm start
-```
+1. Run Docker server.
+
+2. Check that REACT_APP_API_URL in [.env](./.env) file is pointing to the API URL from the Docker server.
+
+3. Run:
+
+   ```
+   cd /project/folder
+   npm install
+   npm start
+   ```
 
 ## 10. How to run the tests
 
