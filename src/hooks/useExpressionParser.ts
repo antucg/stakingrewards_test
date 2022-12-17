@@ -4,7 +4,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { CellData, Spreadsheet } from '../../@types/common'
 import { useAppSelector } from '../redux/hooks/hooks'
 import { getSpreadsheet } from '../redux/spreadsheet/spreadsheetSelector'
-import { CellCoordinate, getCellReferencesFromExpression } from '../utils/dependencyGraph'
+import {
+  CellCoordinate,
+  getCellReferencesFromExpression,
+  nodeIsInDependencyCycle,
+} from '../utils/dependencyGraph'
 import { curateExpression, ERROR_VALUE, ERROR_CIRCULAR } from '../utils/expressions/utils'
 
 const processExpression = (expression: string, variables: Record<string, CellData> = {}) => {
@@ -47,7 +51,7 @@ const useExpressionParser = (maybeExpression: CellData, row: number, column: str
   useEffect(() => {
     if (maybeExpression.startsWith('=') === true) {
       // If there is a dependency cycle let's display the error
-      if (referencedCells === ERROR_CIRCULAR) {
+      if (nodeIsInDependencyCycle(`${column}${row}`)) {
         setValue(ERROR_CIRCULAR)
         return
       }
