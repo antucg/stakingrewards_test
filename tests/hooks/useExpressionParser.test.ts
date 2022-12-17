@@ -1,7 +1,7 @@
 import useExpressionParser from '../../src/hooks/useExpressionParser'
 import { RootState } from '../../src/redux/store'
 import { resetGraph } from '../../src/utils/dependencyGraph'
-import { ERROR_VALUE } from '../../src/utils/expressions/utils'
+import { ERROR_VALUE, ERROR_CIRCULAR } from '../../src/utils/expressions/utils'
 import { renderHook } from '../testing-utils'
 
 describe('useExpressionParser test', () => {
@@ -135,5 +135,28 @@ describe('useExpressionParser test', () => {
       preloadedState: state,
     })
     expect(result.current).toBe('200')
+  })
+
+  it('should return ERROR_CIRCULAR when dependency cycle exist', () => {
+    state.spreadsheet.data.rows = [
+      {
+        idx: 0,
+        key: 'random-key',
+        columns: {
+          A: { data: '100', value: '100' },
+          B: { data: '200', value: '200' },
+          C: { data: '300', value: '300' },
+        },
+      },
+    ]
+    // Create a dependency from A -> B
+    renderHook(() => useExpressionParser('=B0', 0, 'A'), {
+      preloadedState: state,
+    })
+    // New dependency from B -> A
+    const { result } = renderHook(() => useExpressionParser('=A0', 0, 'B'), {
+      preloadedState: state,
+    })
+    expect(result.current).toBe(ERROR_CIRCULAR)
   })
 })

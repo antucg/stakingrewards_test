@@ -10,7 +10,7 @@ Given the instructions of the exercise there were a couple of import points to c
 
 2. Reactive UI
 
-   Linked to the previous point. Given that there can be plenty of cells in a spreadsheet, and they might be connected between each other, we have to find a proper mechanism that is able to update them in an performant way.
+   Linked to the previous point. Given that there can be plenty of cells in a spreadsheet, and they might be connected between each other, we have to find a proper mechanism that is able to update them and detect any possible error in a performant way.
 
 3. Usability
 

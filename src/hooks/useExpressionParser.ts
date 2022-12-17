@@ -1,5 +1,5 @@
 import { evaluate } from 'mathjs'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { CellData, Spreadsheet } from '../../@types/common'
 import { useAppSelector } from '../redux/hooks/hooks'
@@ -28,16 +28,24 @@ const useExpressionParser = (maybeExpression: CellData, row: number, column: str
   const [value, setValue] = useState(maybeExpression)
   const spreadsheet = useAppSelector(getSpreadsheet)
 
+  // Clean up expression
+  const curatedExpression = useMemo(() => {
+    if (maybeExpression.startsWith('=')) {
+      return curateExpression(maybeExpression)
+    }
+    return maybeExpression
+  }, [maybeExpression])
+
+  // Get the list of referenced cells from the expression
+  const referencedCells = useMemo(() => {
+    if (maybeExpression.startsWith('=')) {
+      return getCellReferencesFromExpression(curatedExpression, row, column)
+    }
+    return []
+  }, [curatedExpression, maybeExpression, row, column])
+
   useEffect(() => {
-    if (maybeExpression === '') {
-      setValue('')
-    } else if (maybeExpression.startsWith('=') === true) {
-      // Clean up expression
-      const curatedExpression = curateExpression(maybeExpression)
-
-      // Get the list of referenced cells from the expression
-      const referencedCells = getCellReferencesFromExpression(curatedExpression, row, column)
-
+    if (maybeExpression.startsWith('=') === true) {
       // If there is a dependency cycle let's display the error
       if (referencedCells === ERROR_CIRCULAR) {
         setValue(ERROR_CIRCULAR)
@@ -55,7 +63,7 @@ const useExpressionParser = (maybeExpression: CellData, row: number, column: str
       setValue(maybeExpression)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maybeExpression, row, column, spreadsheet.version])
+  }, [maybeExpression, row, column, curatedExpression, referencedCells, spreadsheet.version])
 
   return value || ''
 }
