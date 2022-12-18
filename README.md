@@ -72,17 +72,7 @@ Thanks to this graph, we can quickly check what dependecies cells have on each o
 
 If any child node has an error (value can't be calculated because the formula is wrong or data type is incompatible), this error will buble up to parent cells. Once fixed, all the cells in the "chain" are updated with the result of the operation.
 
-All this logic can be found on [dependecyGraph](./src/utils/dependencyGraph/index.ts) folder and [useExpressionParser.ts](./src/hooks/useExpressionParser.ts).
-
-### 5.1. useExpressionParser
-
-This custom hook has been implemented to manage the logic of the calculations of the cells. The way it works is as follows:
-
-1. If expression empty or doesn't start with "=", return it
-2. Get referenced cells by the formula (if any). As part of this process the dependency graph is updated.
-3. Get values from referenced cells (if any).
-4. Pass the expression and the variables to the [mathematical processor](https://mathjs.org/).
-5. Return the result.
+All this logic can be found on [dependecyGraph](./src/utils/dependencyGraph/index.ts) folder and [spreadsheetUpdater.ts](./src/redux/spreadsheet/spreadsheetUpdater.ts).
 
 ## 6. Syncing mechanism
 
