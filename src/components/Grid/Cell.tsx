@@ -1,10 +1,10 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import { Input, InputAdornment, styled } from '@mui/material'
 import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from 'react'
-import { getCellValue } from 'src/redux/spreadsheet/spreadsheetSelector'
 
 import { CellData, SpreadsheetCell } from '../../../@types/common'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks'
+import { getCellValue } from '../../redux/spreadsheet/spreadsheetSelector'
 import { updateCell } from '../../redux/spreadsheet/spreadsheetSlice'
 import { isError, curateExpression } from '../../utils/expressions/utils'
 import { rowsBorderRadius } from './StyledGrid'
@@ -41,7 +41,7 @@ const Cell = ({ data, row, column }: CellProps) => {
   )
 
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setCellData(curateExpression(e.target.value))
+    setCellData(e.target.value.startsWith('=') ? curateExpression(e.target.value) : e.target.value)
   }, [])
 
   const onFocus = useCallback(() => {
