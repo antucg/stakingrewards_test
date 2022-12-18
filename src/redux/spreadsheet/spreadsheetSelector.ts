@@ -1,6 +1,4 @@
-import { CellData } from '../../../@types/common'
 import { CellCoordinate } from '../../utils/dependencyGraph'
-import { ERROR_VALUE } from '../../utils/expressions/utils'
 import { RootState } from '../store'
 
 export const getSpreadsheet = ({ spreadsheet }: RootState) => spreadsheet.data
@@ -32,13 +30,7 @@ export const getStatus = ({ spreadsheet }: RootState) => spreadsheet.status
 
 export const getErrorMessage = ({ spreadsheet }: RootState) => spreadsheet.errorMessage
 
-export const getCellValues = (cells: Array<CellCoordinate>) => (state: RootState) =>
-  cells.reduce((acc, current) => {
-    const variableName = `${current.column}${current.row}`
-    acc[variableName] =
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      state.spreadsheet.data.rows[current.row]?.columns[current.column]?.value || ERROR_VALUE
-    return acc
-  }, {} as Record<string, CellData>)
+export const getCellValue = (cell: CellCoordinate) => (state: RootState) =>
+  state.spreadsheet.data.rows[cell.row]?.columns[cell.column]?.value || ''
 
 export const getProgressData = ({ spreadsheet }: RootState) => spreadsheet.progressData

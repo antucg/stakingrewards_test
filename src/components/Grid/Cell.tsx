@@ -1,12 +1,12 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import { Input, InputAdornment, styled } from '@mui/material'
-import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from 'react'
+import { getCellValue } from 'src/redux/spreadsheet/spreadsheetSelector'
 
-import { SpreadsheetCell } from '../../../@types/common'
-import useExpressionParser from '../../hooks/useExpressionParser'
-import { useAppDispatch } from '../../redux/hooks/hooks'
+import { CellData, SpreadsheetCell } from '../../../@types/common'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks'
 import { updateCell } from '../../redux/spreadsheet/spreadsheetSlice'
-import { isError } from '../../utils/expressions/utils'
+import { isError, curateExpression } from '../../utils/expressions/utils'
 import { rowsBorderRadius } from './StyledGrid'
 
 const InputWrapper = styled('div')({
@@ -33,21 +33,15 @@ const Cell = ({ data, row, column }: CellProps) => {
   const dispatch = useAppDispatch()
   const [cellData, setCellData] = useState(data.data)
   const [isFocused, setIsFocused] = useState(false)
-  const cellValue = useExpressionParser(cellData, row, column)
+  const cellValue = useAppSelector(getCellValue({ row, column }))
 
   const updateStore = useCallback(
-    (cellData: SpreadsheetCell) => dispatch(updateCell({ row, column, data: cellData })),
+    (cellData: CellData) => dispatch(updateCell({ row, column, data: cellData })),
     [row, column, dispatch],
   )
 
-  useEffect(() => {
-    if (!isFocused) {
-      updateStore({ data: cellData, value: cellValue })
-    }
-  }, [cellValue, cellData, updateStore, isFocused])
-
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setCellData(e.target.value)
+    setCellData(curateExpression(e.target.value))
   }, [])
 
   const onFocus = useCallback(() => {
@@ -56,7 +50,8 @@ const Cell = ({ data, row, column }: CellProps) => {
 
   const onBlur = useCallback(() => {
     setIsFocused(false)
-  }, [])
+    updateStore(cellData)
+  }, [cellData, updateStore])
 
   /**
    * Force input blur when pressing the Enter key

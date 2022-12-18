@@ -1,7 +1,7 @@
 import {
   getFilteredSpreadsheet,
   getSpreadsheetHeaders,
-  getCellValues,
+  getCellValue,
 } from '../../../src/redux/spreadsheet/spreadsheetSelector'
 import { RootState } from '../../../src/redux/store'
 
@@ -117,7 +117,7 @@ describe('Spreadsheet selector test', () => {
     expect(getSpreadsheetHeaders(state)).toEqual(['A', 'B', 'C'])
   })
 
-  it('should return cell values', () => {
+  it('should return cell value when this exist in store', () => {
     state.spreadsheet.data.rows = [
       {
         idx: 0,
@@ -157,11 +157,31 @@ describe('Spreadsheet selector test', () => {
       },
     ]
 
-    expect(
-      getCellValues([
-        { column: 'A', row: 0 },
-        { column: 'C', row: 1 },
-      ])(state),
-    ).toEqual({ A0: '1', C1: '6' })
+    expect(getCellValue({ column: 'A', row: 0 })(state)).toEqual('1')
+  })
+
+  it("should return an empty string when cell doesn't exist in store", () => {
+    state.spreadsheet.data.rows = [
+      {
+        idx: 0,
+        key: 'de786e39-19a7-4bab-a31b-05387e09c17c',
+        columns: {
+          A: {
+            data: '=B1 - 1',
+            value: '1',
+          },
+          B: {
+            data: '2',
+            value: '2',
+          },
+          C: {
+            data: '3',
+            value: '3',
+          },
+        },
+      },
+    ]
+
+    expect(getCellValue({ column: 'A', row: 100000 })(state)).toEqual('')
   })
 })

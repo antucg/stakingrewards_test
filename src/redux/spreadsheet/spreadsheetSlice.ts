@@ -3,13 +3,14 @@ import { cloneDeep } from 'lodash'
 import numberToExcelHeader from 'number-to-excel-header'
 import { v4 as uuidv4 } from 'uuid'
 
-import { ProgressData, Spreadsheet, SpreadsheetCell } from '../../../@types/common'
+import { CellData, ProgressData, Spreadsheet, SpreadsheetCell } from '../../../@types/common'
 import * as spreadhsheetThunks from './spreadsheetThunks'
+import { updateSpreadsheet } from './spreadsheetUpdater'
 
 interface UpdateCellData {
   row: number
   column: string
-  data: SpreadsheetCell
+  data: CellData
 }
 
 export interface SpreadsheetState {
@@ -57,7 +58,17 @@ export const spreadsheetSlice = createSlice({
       state.filterQuery = action.payload
     },
     updateCell: (state, action: PayloadAction<UpdateCellData>) => {
-      state.data.rows[action.payload.row]!.columns[action.payload.column] = action.payload.data
+      state.data.rows[action.payload.row]!.columns[action.payload.column]!.data =
+        action.payload.data
+      const updatedCells = updateSpreadsheet(
+        action.payload.data,
+        action.payload.row,
+        action.payload.column,
+        state.data.rows,
+      )
+      updatedCells.forEach(({ row, column, value }) => {
+        state.data.rows[row]!.columns[column]!.value = value
+      })
       state.data.version += 1
       state.status = 'changed'
     },
