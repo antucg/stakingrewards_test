@@ -38,10 +38,6 @@ export const getCellReferencesFromExpression = (
   row: number,
   column: string,
 ): Array<CellCoordinate> => {
-  if (expression === '') {
-    return []
-  }
-
   const currentNode = `${column}${row}`
 
   /**

@@ -161,7 +161,7 @@ describe('Spreadsheet updater test', () => {
     expect(updatedCell[0]?.value).toBe(ERROR_CIRCULAR)
   })
 
-  it('should update all celss in a cycle when this no longer exist', () => {
+  it('should update all cells in a cycle when breaking cycle with value', () => {
     // A -> B
     const expressionA = '=B0'
     spreadsheet[0]!.columns.A!.data = expressionA
@@ -194,5 +194,29 @@ describe('Spreadsheet updater test', () => {
     expect(updatedCells[0]?.value).toBe(fixExpression)
     expect(updatedCells[1]?.value).toBe(fixExpression)
     expect(updatedCells[2]?.value).toBe(fixExpression)
+  })
+
+  it('should update all cells in a cycle when clearing one of the cslls', () => {
+    // A -> B
+    const expressionA = '=B0'
+    spreadsheet[0]!.columns.A!.data = expressionA
+    updateSpreadsheet(expressionA, 0, 'A', spreadsheet)
+    spreadsheet[0]!.columns.A!.value = ERROR_CIRCULAR
+
+    // B -> A
+    const expressionB = '=A0'
+    spreadsheet[0]!.columns.B!.data = expressionB
+    updateSpreadsheet(expressionB, 0, 'B', spreadsheet)
+    spreadsheet[0]!.columns.B!.value = ERROR_CIRCULAR
+
+    const fixExpression = ''
+    spreadsheet[0]!.columns.B!.data = fixExpression
+    const updatedCells = updateSpreadsheet(fixExpression, 0, 'B', spreadsheet)
+    expect(updatedCells).toHaveLength(2)
+    expect(updatedCells[0]?.row).toBe(0)
+    expect(updatedCells[1]?.row).toBe(0)
+    expect([updatedCells[0]?.column, updatedCells[1]?.column].sort()).toEqual(['A', 'B'])
+    expect(updatedCells[0]?.value).toBe(fixExpression)
+    expect(updatedCells[1]?.value).toBe(fixExpression)
   })
 })
